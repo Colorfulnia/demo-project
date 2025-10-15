@@ -1,6 +1,10 @@
 package com.example.demoproject.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -12,12 +16,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "商品名称不能为空")
     @Column(nullable = false)
     private String productName;
 
+    @NotNull(message = "价格不能为空")
+    @DecimalMin(value = "0.01", message = "价格必须大于0")
     @Column(nullable = false)
     private Double price;
 
+    @Min(value = 1, message = "数量至少为1")
     private Integer quantity;
 
     @Column(name = "order_time")
@@ -27,7 +35,8 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Order(){}
+    public Order() {
+    }
 
     public Long getId() {
         return id;
@@ -72,6 +81,7 @@ public class Order {
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
         this.user = user;
     }

@@ -5,6 +5,7 @@ import com.example.demoproject.dto.StudentDTO;
 import com.example.demoproject.dto.StudentDetailDTO;
 import com.example.demoproject.entity.Student;
 import com.example.demoproject.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping
-    public Result<StudentDTO> createStudent(@RequestBody Student student) {
+    public Result<StudentDTO> createStudent(@Valid @RequestBody Student student) {
         return Result.success(studentService.createStudent(student));
     }
 

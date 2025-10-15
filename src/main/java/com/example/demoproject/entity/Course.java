@@ -1,6 +1,10 @@
 package com.example.demoproject.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,12 +16,17 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "课程名称不能为空")
+    @Size(min = 2,max = 50,message = "课程名称长度必须在2-50之间")
     @Column(nullable = false,unique = true)
     private String courseName;
 
+    @NotBlank(message = "教师姓名不能为空")
     @Column(nullable = false)
     private String teacher;
 
+    @Min(value= 1,message = "学分至少为1")
+    @Max(value= 10,message = "学分最多为10")
     private Integer credits;
 
     @ManyToMany(mappedBy = "courses")

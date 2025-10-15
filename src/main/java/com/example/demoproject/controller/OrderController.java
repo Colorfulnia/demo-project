@@ -3,6 +3,7 @@ package com.example.demoproject.controller;
 import com.example.demoproject.common.Result;
 import com.example.demoproject.entity.Order;
 import com.example.demoproject.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/user/{userId}")
-    public Result<Order> createOrder(@PathVariable Long userId, @RequestBody Order order){
+    public Result<Order> createOrder(@PathVariable Long userId, @Valid @RequestBody Order order){
         return Result.success(orderService.createOrder(userId,order));
     }
 

@@ -2,6 +2,7 @@ package com.example.demoproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +14,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "用户名不能为空")
+    @Size(min = 2, max = 50, message = "用户名长度必须在2-50之间")
     @Column(nullable = false,length = 50)
     private String username;
 
+    @NotBlank(message = "邮箱不能为空")
+    @Email(message = "邮箱格式不正确")
     @Column(nullable = false,length = 100)
     private String email;
 
+    @Min(value= 0,message = "年龄不能为负数")
+    @Max(value= 150,message = "年龄不能超过150")
     private Integer age;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval =true)

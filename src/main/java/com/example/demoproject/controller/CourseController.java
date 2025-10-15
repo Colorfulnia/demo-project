@@ -3,6 +3,7 @@ package com.example.demoproject.controller;
 import com.example.demoproject.common.Result;
 import com.example.demoproject.entity.Course;
 import com.example.demoproject.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping
-    public Result<Course> createCourse(@RequestBody Course course){
+    public Result<Course> createCourse(@Valid @RequestBody Course course){
         return Result.success(courseService.createCourse(course));
     }
 

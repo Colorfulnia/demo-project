@@ -4,6 +4,7 @@ import com.example.demoproject.common.Result;
 import com.example.demoproject.entity.User;
 import com.example.demoproject.repository.UserRepository;
 import com.example.demoproject.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public Result<User> createUser(@RequestBody User user){
+    public Result<User> createUser(@Valid @RequestBody User user){
 //        return userRepository.save(user);
         return Result.success(userService.createUser(user));
     }
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public Result<User> updateUser(@PathVariable Long id, @RequestBody User userDetails){
+    public Result<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails){
 //        User user = userRepository.findById(id).orElse(null);
 //        if(user != null){
 //            user.setUsername(userDetails.getUsername());
