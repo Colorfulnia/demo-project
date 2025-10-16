@@ -1,9 +1,12 @@
 package com.example.demoproject.service;
 
+import com.example.demoproject.annotation.Log;
 import com.example.demoproject.entity.User;
 import com.example.demoproject.exception.BusinessException;
 import com.example.demoproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
+    @Log("用户创建操作")
     public User createUser(User user) {
         User existingUserByEmail = userRepository.findByEmail(user.getEmail());
         if(existingUserByEmail != null){
@@ -32,6 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Log("查询所有用户")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -42,6 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Log("更新用户信息")
     public User updateUser(Long id, User userDetails){
         User user = userRepository.findById(id).orElse(null);
         if(user != null){
@@ -56,5 +62,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<User> getUsersPage(Pageable pageable){
+        return userRepository.findAll(pageable);
     }
 }

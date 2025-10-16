@@ -6,6 +6,10 @@ import com.example.demoproject.repository.UserRepository;
 import com.example.demoproject.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -95,5 +99,22 @@ public class UserController {
     @GetMapping("/query/count-older-than/{age}")
     public Result<Long> countOlderThan(@PathVariable Integer age){
         return Result.success(userRepository.countUsersOlderThan(age));
+    }
+
+    @GetMapping("/page")
+    public Result<Page<User>> getUsersPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc")String direction){
+        Sort sort= direction.equalsIgnoreCase("asc")
+                ?Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+
+        Page<User> userPage = userService.getUsersPage(pageable);
+
+        return Result.success(userPage);
     }
 }

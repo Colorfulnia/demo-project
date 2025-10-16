@@ -28,4 +28,40 @@ public class ScheduledTask {
         System.out.println("【定时任务2】每10秒执行一次 - 当前时间:  " + time);
     }
 
+    @Scheduled(cron = "0 * * * * *")
+    public void cronTask1(){
+        String time = LocalDateTime.now().format(formatter);
+        System.out.println("【Cron任务1】每分钟执行 - 当前时间: "+time);
+    }
+    @Scheduled(cron = "0 */10 * * * *")
+    public void cronTask2(){
+        String time = LocalDateTime.now().format(formatter);
+        System.out.println("【Cron任务2】每10秒执行 - 当前时间: "+time);
+    }
+
+    @Scheduled(cron = "0 0 9 * * ?")
+    public void cronTask3(){
+        String time = LocalDateTime.now().format(formatter);
+        System.out.println("【Cron任务3】每天9点执行 - 当前时间: "+time);
+    }
+
+    @Scheduled(cron = "0 0 10 * * Mon")
+    public void cronTask4(){
+        String time = LocalDateTime.now().format(formatter);
+        System.out.println("【Cron任务4】每周一10点执行 - 当前时间: "+time);
+    }
+
+    @Scheduled(cron = "0 0 2 1 * ?")
+    public void cronTask5(){
+        String time = LocalDateTime.now().format(formatter);
+        System.out.println("【Cron任务5】每月1号凌晨2点执行 - 当前时间: "+time);
+    }
+
+    @Scheduled(cron = "0 0 8 ? * MON-FRI")
+    public void cronTask6(){
+        String time = LocalDateTime.now().format(formatter);
+        System.out.println("【Cron任务6】工作日早上8点执行 - 当前时间: "+time);
+    }
+
+
 }

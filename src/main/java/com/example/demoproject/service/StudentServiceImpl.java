@@ -9,6 +9,8 @@ import com.example.demoproject.exception.BusinessException;
 import com.example.demoproject.repository.CourseRepository;
 import com.example.demoproject.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -94,6 +96,11 @@ public class StudentServiceImpl implements StudentService {
                 student.getStudentNumber(),
                 student.getMajor()
         );
+    }
+
+    @Override
+    public Page<Student> getStudentsPage(Pageable pageable){
+        return studentRepository.findAll(pageable);
     }
 
     private StudentDetailDTO convertToDetailDTO(Student student) {
