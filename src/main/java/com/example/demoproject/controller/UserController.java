@@ -24,13 +24,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public Result<User> createUser(@Valid @RequestBody User user){
+    public Result<User> createUser(@Valid @RequestBody User user) {
 //        return userRepository.save(user);
         return Result.success(userService.createUser(user));
     }
 
     @GetMapping
-    public Result<List<User>> getAllUsers(){
+    public Result<List<User>> getAllUsers() {
 //        return userRepository.findAll();
         return Result.success(userService.getAllUsers());
     }
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public Result<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails){
+    public Result<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
 //        User user = userRepository.findById(id).orElse(null);
 //        if(user != null){
 //            user.setUsername(userDetails.getUsername());
@@ -55,49 +55,49 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public Result<String> deleteUser(@PathVariable Long id){
+    public Result<String> deleteUser(@PathVariable Long id) {
 //        userRepository.deleteById(id);
         userService.deleteUser(id);
         return Result.success("用户已删除");
     }
 
     @GetMapping("/age/greater-than/{age}")
-    public Result<List<User>> findByAgeGreaterThan(@PathVariable Integer age){
+    public Result<List<User>> findByAgeGreaterThan(@PathVariable Integer age) {
         return Result.success(userRepository.findByAgeGreaterThan(age));
     }
 
     @GetMapping("/age/between")
-    public Result<List<User>> getUserByAgeBetween(@RequestParam Integer min, @RequestParam Integer max){
-        return Result.success(userRepository.findByAgeBetween(min,max));
+    public Result<List<User>> getUserByAgeBetween(@RequestParam Integer min, @RequestParam Integer max) {
+        return Result.success(userRepository.findByAgeBetween(min, max));
     }
 
     @GetMapping("/search")
-    public Result<List<User>> searchUsers(@RequestParam String keyword){
+    public Result<List<User>> searchUsers(@RequestParam String keyword) {
         return Result.success(userRepository.findByUsernameContaining(keyword));
     }
 
     @GetMapping("/sorted-by-age")
-    public Result<List<User>> getSortedByAge(){
+    public Result<List<User>> getSortedByAge() {
         return Result.success(userRepository.findAllByOrderByAgeDesc());
     }
 
     @GetMapping("/query/older-than/{age}")
-    public Result<List<User>> getUsersOlderThan(@PathVariable Integer age){
+    public Result<List<User>> getUsersOlderThan(@PathVariable Integer age) {
         return Result.success(userRepository.findUsersOlderThan(age));
     }
 
     @GetMapping("/query/age-range")
-    public Result<List<User>> getUserByAgeRangeNative(@RequestParam Integer min, @RequestParam Integer max){
-        return Result.success(userRepository.findUserByAgeRange(min,max));
+    public Result<List<User>> getUserByAgeRangeNative(@RequestParam Integer min, @RequestParam Integer max) {
+        return Result.success(userRepository.findUserByAgeRange(min, max));
     }
 
     @GetMapping("/query/search")
-    public Result<List<User>> searchInUsernameOrEmail(@RequestParam String keyword){
+    public Result<List<User>> searchInUsernameOrEmail(@RequestParam String keyword) {
         return Result.success(userRepository.searchByUsernameOrEmail(keyword));
     }
 
     @GetMapping("/query/count-older-than/{age}")
-    public Result<Long> countOlderThan(@PathVariable Integer age){
+    public Result<Long> countOlderThan(@PathVariable Integer age) {
         return Result.success(userRepository.countUsersOlderThan(age));
     }
 
@@ -106,15 +106,46 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "desc")String direction){
-        Sort sort= direction.equalsIgnoreCase("asc")
-                ?Sort.by(sortBy).ascending()
+            @RequestParam(defaultValue = "desc") String direction) {
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        Pageable pageable = PageRequest.of(page,size,sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<User> userPage = userService.getUsersPage(pageable);
 
         return Result.success(userPage);
+    }
+
+    @GetMapping("/demo-n-plus-1")
+    public Result<String> demoNPlusOne() {
+        System.out.println("=== 开始演示 N+1 问题 ===");
+
+        List<User> users = userRepository.findAll();
+        System.out.println("查询到 " + users.size() + " 个用户");
+
+        for (User user : users) {
+            int orderCount = user.getOrders().size();
+            System.out.println("用户 " + user.getUsername() + " 有 " + orderCount + " 个订单");
+        }
+
+        System.out.println("=== N+1 问题演示完成 ===");
+        return Result.success("请查看控制台的 Hibernate SQL 输出");
+    }
+
+    @GetMapping("/demo-solution")
+    public Result<String> demoSolution() {
+        System.out.println("=== 开始演示解决方案 ===");
+
+        List<User> users = userRepository.findAllWithOrders();
+        System.out.println("查询到 "+users.size()+" 个用户");
+
+        for(User user : users){
+            int orderCount = user.getOrders().size();
+            System.out.println("用户 "+user.getUsername()+" 有 "+orderCount+" 个订单");
+        }
+        System.out.println("=== 解决方案演示完成 ===");
+        return Result.success("请查看控制台的 Hibernate SQL 输出");
     }
 }

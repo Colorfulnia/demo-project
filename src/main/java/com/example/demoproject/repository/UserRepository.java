@@ -30,4 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT COUNT(u) FROM User u WHERE u.age > :age")
     Long countUsersOlderThan(@Param("age") Integer age);
+
+    @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.orders")
+    List<User> findAllWithOrders();
 }
