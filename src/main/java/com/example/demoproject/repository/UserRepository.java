@@ -1,6 +1,7 @@
 package com.example.demoproject.repository;
 
 import com.example.demoproject.entity.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,4 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.orders")
     List<User> findAllWithOrders();
+
+    @EntityGraph(attributePaths = {"orders"})
+    List<User> findAll();
 }

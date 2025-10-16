@@ -5,6 +5,9 @@ import com.example.demoproject.entity.User;
 import com.example.demoproject.exception.BusinessException;
 import com.example.demoproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Log("用户创建操作")
+    @CacheEvict(value= "users",allEntries = true)
     public User createUser(User user) {
         User existingUserByEmail = userRepository.findByEmail(user.getEmail());
         if(existingUserByEmail != null){
@@ -37,17 +41,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Log("查询所有用户")
+    @CacheEvict(value = "users",key = "'all'")
     public List<User> getAllUsers() {
+        System.out.println("从数据库查询所有用户...");
         return userRepository.findAll();
     }
 
     @Override
+    @Cacheable(value = "users",key = "#id")
     public User getUserById(Long id) {
+        System.out.println("从数据库查询用户 ID: "+id);
         return userRepository.findById(id).orElse(null);
     }
 
     @Override
     @Log("更新用户信息")
+    @CachePut(value = "users",key = "#id")
+    @CacheEvict(value = "users",key = "'all'")
     public User updateUser(Long id, User userDetails){
         User user = userRepository.findById(id).orElse(null);
         if(user != null){
@@ -60,6 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "users",allEntries = true)
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

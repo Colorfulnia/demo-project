@@ -148,4 +148,20 @@ public class UserController {
         System.out.println("=== 解决方案演示完成 ===");
         return Result.success("请查看控制台的 Hibernate SQL 输出");
     }
+
+    @GetMapping("/demo-entity-graph")
+    public Result<String> demoEntityGraph() {
+        System.out.println("=== 开始演示 N+1 问题 ===");
+
+        List<User> users = userRepository.findAll();
+        System.out.println("查询到 " + users.size() + " 个用户");
+
+        for (User user : users) {
+            int orderCount = user.getOrders().size();
+            System.out.println("用户 " + user.getUsername() + " 有 " + orderCount + " 个订单");
+        }
+
+        System.out.println("=== N+1 问题演示完成 ===");
+        return Result.success("请查看控制台的 Hibernate SQL 输出");
+    }
 }
