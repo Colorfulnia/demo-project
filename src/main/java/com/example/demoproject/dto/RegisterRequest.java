@@ -36,7 +36,7 @@ public class RegisterRequest {
     }
 
     public String getPassword(){
-        return username;
+        return password;
     }
     public void setPassword(String password){
         this.password = password;
