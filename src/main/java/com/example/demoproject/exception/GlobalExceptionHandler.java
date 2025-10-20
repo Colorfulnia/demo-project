@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,5 +35,10 @@ public class GlobalExceptionHandler {
     public Result<Object> handleException(Exception e) {
         e.printStackTrace();
         return Result.error(500,"系统内部错误: "+ e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public Result<Void> handleAccessDeniedException(AccessDeniedException e){
+        return Result.error(403,"权限不足: "+ e.getMessage());
     }
 }

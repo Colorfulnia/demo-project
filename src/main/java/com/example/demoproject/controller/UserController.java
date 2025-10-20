@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class UserController {
         return Result.success(userService.getUserById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public Result<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
 //        User user = userRepository.findById(id).orElse(null);
@@ -51,14 +53,19 @@ public class UserController {
 //            return userRepository.save(user);
 //        }
 //        return null;
-        return Result.success(userService.updateUser(id, userDetails));
+        User updatedUser = userService.updateUser(id,userDetails);
+        if(updatedUser == null){
+            return Result.error(404,"用户不存在");
+        }
+        return Result.success(updatedUser);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public Result<String> deleteUser(@PathVariable Long id) {
 //        userRepository.deleteById(id);
         userService.deleteUser(id);
-        return Result.success("用户已删除");
+        return Result.success(null);
     }
 
     @GetMapping("/age/greater-than/{age}")

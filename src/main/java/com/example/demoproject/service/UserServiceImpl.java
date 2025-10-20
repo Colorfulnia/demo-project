@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Log("查询所有用户")
-    @CacheEvict(value = "users",key = "'all'")
+    @Cacheable(value = "users",key = "'all'")
     public List<User> getAllUsers() {
         System.out.println("从数据库查询所有用户...");
         return userRepository.findAll();
