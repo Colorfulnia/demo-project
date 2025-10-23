@@ -14,11 +14,11 @@ services:
       - demo-network
     healthcheck:
       # ⭐ 改进的健康检查：测试真实的数据库连接
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]  #, "-uroot", "-proot123"
       interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 60s  # ⭐ 给 MySQL 60秒启动时间
+      timeout: 5s
+      retries: 5
+      #start_period: 60s  # ⭐ 给 MySQL 60秒启动时间
 
   # ⭐ Redis 服务
   redis:
@@ -38,14 +38,15 @@ services:
 
   # ⭐ Spring Boot 应用
   app:
-    build: .
+    image: ${DOCKER_USERNAME}/demo-project:latest
+    #build: . #Local build before
     container_name: demo-app
     ports:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       # ⭐ 添加 JVM 启动参数，增加连接超时
-      - JAVA_OPTS=-Xms256m -Xmx512m
+      #- JAVA_OPTS=-Xms256m -Xmx512m
     depends_on:
       mysql:
         condition: service_healthy
@@ -53,7 +54,7 @@ services:
         condition: service_healthy
     networks:
       - demo-network
-    restart: unless-stopped  # ⭐ 改为 unless-stopped
+    restart: on-failure  #unless-stopped  # ⭐ 改为 unless-stopped
 
 volumes:
   mysql-data:
